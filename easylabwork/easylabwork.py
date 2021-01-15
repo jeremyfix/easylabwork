@@ -28,11 +28,18 @@ class IdxSelector(object):
 
     def to_next_slice(self):
         try:
+            prev_slice = self.current_slice
             self.current_slice = next(self.slice_iterator)
             if self.current_slice[1] < self.current_slice[0]:
                 raise RuntimeError(f"Mismatch between the closing block at"
                                    f" line {self.current_slice[1]+1} and opening"
                                    f" block at line {self.current_slice[0]+1}")
+            if prev_slice is not None \
+               and self.current_slice is not None \
+               and prev_slice[1]+1 == self.current_slice[0] :
+                print(f"Warning: You have two consecutive blocks without even"
+                      " a line in between, there will remain a comment"
+                      " in the result")
         except StopIteration:
             return None
 
@@ -101,7 +108,7 @@ def clean_file(fh):
 
     if len(start_blocks_idx) != len(end_blocks_idx):
         raise RuntimeError("Non matching opening or ending solution blocks."
-                           " Did all your #@SOL has their corresponding"
+                           " Did all your #@TEMPL has their corresponding"
                            " #SOL@ and vice versa ?")
 
     line_selector = IdxSelector(len(output_lines),
@@ -125,11 +132,12 @@ def clean_file(fh):
                 # if we are just leaving the block, the last #TEMPL@ 
                 # must be discarded
                 prev_line = None
-        if prev_line is not None:
+        if prev_line is not None and not was_in:
             lines.append(prev_line)
         prev_line = next_line
         was_in = is_in
-
+    if prev_line is not None:
+        lines.append(prev_line)
 
     return "".join(lines)
 
