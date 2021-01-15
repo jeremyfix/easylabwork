@@ -6,6 +6,16 @@ You may be tempted to code in parallel both the starter code and the solution bu
 
 The way proposed by easylabwork is to prepare a merged version of starter code and solution code and then to apply the easylabwork script on it to split it into the starter code and the solution code. You must equip your code with special tags indicating to easylabwork which lines need to be removed.
 
+## How to install
+
+To install, use pip :
+
+```bash
+python3 -m pip install git+https://github.com/jeremyfix/easylabwork.git
+```
+
+It is not yet on Pypi.
+
 ## Processing a single file
 
 For now on, easylabwork is though for python programming and renders a tagged code :
@@ -46,3 +56,5 @@ def myfunction(value: float):
 
     return sq_value
 ```
+
+
