@@ -26,9 +26,11 @@ easylabwork examples examples_done
 
 The above command will iterate in the examples directory and every processed file will be copied in the directory examples_done with a mirrored.
 
-## Processing a single file
+## Examples
 
-For now on, easylabwork is though for python programming and renders a tagged code :
+### One line tags
+
+For now on, easylabwork is thought for python programming and renders a tagged code :
 
 ```python
 
@@ -75,3 +77,80 @@ if __name__ == '__main__':
     print(f"The result of the function call is {res}")
 ```
 
+### Block tags
+
+We can tag blocks of code as below :
+
+```python
+
+#!/usr/bin/env python3
+# coding: utf-8
+
+# Standard imports
+import sys
+
+
+def syr(stem: int):
+    '''
+    Compute the serie of Syracuse up to the limit cycle
+    '''
+
+    value = stem
+
+    while(value != 1):
+        #@TEMPL
+        #if None:
+        #    value = None
+        #else:
+        #    value = None
+        #TEMPL@
+        #@SOL
+        if value % 2 == 0:
+            value = value // 2
+        else:
+            value = 3 * value + 1
+        #SOL@
+        sys.stdout.write(f"{value} ")
+        sys.stdout.flush()
+    print()
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} value")
+        sys.exit(-1)
+
+    syr(int(sys.argv[1]))
+```
+
+which is rendered as:
+
+```python
+
+#!/usr/bin/env python3
+# coding: utf-8
+
+# Standard imports
+import sys
+
+
+def syr(stem: int):
+    '''
+    Compute the serie of Syracuse up to the limit cycle
+    '''
+
+    value = stem
+
+    while(value != 1):
+        if None:
+            value = None
+        else:
+            value = None
+        sys.stdout.write(f"{value} ")
+        sys.stdout.flush()
+    print()
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} value")
+        sys.exit(-1)
+```
