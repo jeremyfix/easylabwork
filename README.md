@@ -4,7 +4,7 @@ It can be tricky (or at least cumbersome) to prepare labworks when you want to p
 
 You may be tempted to code in parallel both the starter code and the solution but updating both is cumbersome. You may be tempted to write your solution to ensure the code is ok but then it is time consuming to remove your solution code to prepare the starter code and then, for updating, you fall back to the first situation.
 
-The way proposed by easylabwork is to prepare a merged version of starter code and solution code and then to apply the easylabwork script on it to split it into the starter code and the solution code. You must equip your code with special tags indicating to easylabwork which lines need to be removed.
+The way proposed by easylabwork is to prepare a merged version of starter code and solution code and then to apply the easylabwork script on it to split it into the starter code and the solution code. You must equip your code with special tags indicating to easylabwork which lines need to be removed. The initial version is the solution code and can be executed for testing everything is running as expected.
 
 ## How to install
 
@@ -36,6 +36,10 @@ def myfunction(value: float):
     sq_value = value**2  #@SOL@
 
     return sq_value
+
+if __name__ == '__main__':
+    res = myfunction(1)
+    print(f"The result of the function call is {res}")
 ```
 
 into the starter code
@@ -55,6 +59,9 @@ def myfunction(value: float):
     sq_value = None
 
     return sq_value
-```
 
+if __name__ == '__main__':
+    res = myfunction(1)
+    print(f"The result of the function call is {res}")
+```
 
