@@ -16,6 +16,16 @@ python3 -m pip install git+https://github.com/jeremyfix/easylabwork.git
 
 It is not yet on Pypi.
 
+## Usage
+
+The package installs a program that parse files in a directory and make a mirror of this hierarchy with processed files. 
+
+```bash
+easylabwork examples examples_done
+```
+
+The above command will iterate in the examples directory and every processed file will be copied in the directory examples_done with a mirrored.
+
 ## Processing a single file
 
 For now on, easylabwork is though for python programming and renders a tagged code :
