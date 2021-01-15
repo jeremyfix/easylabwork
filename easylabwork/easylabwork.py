@@ -9,6 +9,8 @@ import pathlib
 from pathlib import Path
 
 _TEMPLATE_TAG = "#@TEMPL@"
+_TEMPLATE_BLOCK_START = "#@TEMPL"
+_TEMPLATE_BLOCK_END = "#TEMPL@"
 _SOLUTION_TAG = "@SOL@"
 _SOLUTION_BLOCK_START = "#@SOL"
 _SOLUTION_BLOCK_END = "#SOL@"
@@ -16,17 +18,21 @@ _SOLUTION_BLOCK_END = "#SOL@"
 
 class IdxSelector(object):
 
-    def __init__(self, max_lines, slices, keep):
-        self.keep = keep
+    def __init__(self, max_lines, slices):
         self.max_lines = max_lines
         self.slices = slices
         self.slice_iterator = slices
         self.idx = 0
-        self.current_slice = self.get_next_slice()
+        self.current_slice = None
+        self.to_next_slice()
 
-    def get_next_slice(self):
+    def to_next_slice(self):
         try:
-            return next(self.slice_iterator)
+            self.current_slice = next(self.slice_iterator)
+            if self.current_slice[1] < self.current_slice[0]:
+                raise RuntimeError(f"Mismatch between the closing block at"
+                                   f" line {self.current_slice[1]+1} and opening"
+                                   f" block at line {self.current_slice[0]+1}")
         except StopIteration:
             return None
 
@@ -40,19 +46,14 @@ class IdxSelector(object):
 
         def is_in_slice(idx, cur_slice):
             return cur_slice is not None and cur_slice[0] <= idx <= cur_slice[1]
-        
+
         if self.idx < self.max_lines:
-            print(f"{self.idx} / {self.max_lines}")
             # We test if the index is in the current slice
-            if is_in_slice(self.idx, self.current_slice):
-                value = self.keep
-            else:
-                value = not self.keep
+            is_in = is_in_slice(self.idx, self.current_slice)
             if self.current_slice is not None and self.idx > self.current_slice[1]:
-                self.current_slice = self.get_next_slice()
+                self.to_next_slice()
             self.idx += 1
-            return value
-        print("Stopping")
+            return is_in
         raise StopIteration()
 
 
@@ -88,11 +89,49 @@ def clean_file(fh):
                            " #SOL@ and vice versa ?")
 
     line_selector = IdxSelector(len(output_lines),
-                                zip(start_blocks_idx, end_blocks_idx),
-                                keep=False)
-    output_lines = [li for li, keepi in zip(output_lines, line_selector) if keepi]
+                                zip(start_blocks_idx, end_blocks_idx))
+    output_lines = [li for li, is_in in zip(output_lines, line_selector) if not is_in]
 
-    return "".join(output_lines)
+    # Process the TEMPL blocks
+    # The opening and closing should be removed
+    # The lines in between must be uncommented
+    for i, li in enumerate(output_lines):
+        start_blocks_idx = [i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_START) != -1]
+        end_blocks_idx = [i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_END) != -1]
+
+    if len(start_blocks_idx) != len(end_blocks_idx):
+        raise RuntimeError("Non matching opening or ending solution blocks."
+                           " Did all your #@SOL has their corresponding"
+                           " #SOL@ and vice versa ?")
+
+    line_selector = IdxSelector(len(output_lines),
+                                zip(start_blocks_idx, end_blocks_idx))
+    lines = []
+    prev_line = None
+    next_line = None
+    was_in = False
+    for li, is_in in zip(output_lines, line_selector):
+        next_line = li
+        if is_in:
+            # We are in a block, we remove the first comment
+            first_comment_idx = next_line.find('#')
+            next_line = next_line[:first_comment_idx] + next_line[first_comment_idx+1:]
+            if not was_in:
+                # If we enter the block we do not keep the line
+                next_line = None
+        else:
+            # We are not (maybe just leaving) a template block
+            if was_in:
+                # if we are just leaving the block, the last #TEMPL@ 
+                # must be discarded
+                prev_line = None
+        if prev_line is not None:
+            lines.append(prev_line)
+        prev_line = next_line
+        was_in = is_in
+
+
+    return "".join(lines)
 
 
 def process_file(filepath: Union[Path, str],
