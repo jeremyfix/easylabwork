@@ -4,9 +4,11 @@
 # Standard imports
 import os
 import sys
+import mimetypes
 from typing import Union
 import pathlib
 from pathlib import Path
+import shutil
 
 _TEMPLATE_TAG = "#@TEMPL@"
 _TEMPLATE_BLOCK_START = "#@TEMPL"
@@ -147,12 +149,16 @@ def process_file(filepath: Union[Path, str],
     '''
     Process a single file
     '''
-    print(f"{filepath} -> {targetpath}")
-    with open(filepath, 'r') as fh:
-        reslines = clean_file(fh)
-    with open(targetpath, 'w') as fh:
-        fh.write(reslines)
-
+    try:
+        with open(filepath, 'r') as fh:
+            reslines = clean_file(fh)
+        with open(targetpath, 'w') as fh:
+            fh.write(reslines)
+        print(f"Processed {filepath} -> {targetpath}")
+    except UnicodeDecodeError:
+        # In this case, we just copy the file
+        shutil.copy(filepath, targetpath)
+        print(f"Copy {filepath} -> {targetpath}")
 
 def process_directory(sourcepath: Union[Path, str],
                       targetpath: Union[Path, str]):
