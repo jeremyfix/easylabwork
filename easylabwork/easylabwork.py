@@ -147,7 +147,7 @@ def process_file(filepath: Union[Path, str],
     '''
     Process a single file
     '''
-    print(filepath)
+    print(f"{filepath} -> {targetpath}")
     with open(filepath, 'r') as fh:
         reslines = clean_file(fh)
     with open(targetpath, 'w') as fh:
