@@ -190,5 +190,9 @@ def main():
         print(f"Usage : {sys.argv[0]} source_dir target_dir")
         sys.exit(-1)
 
-    process_directory(sys.argv[1],
-                      sys.argv[2])
+    if not Path(sys.argv[1]).is_dir():
+        process_file(sys.argv[1],
+                     sys.argv[2])
+    else:
+        process_directory(sys.argv[1],
+                          sys.argv[2])
