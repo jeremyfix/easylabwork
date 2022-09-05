@@ -40,7 +40,7 @@ class IdxSelector(object):
                 and prev_slice[1] + 1 == self.current_slice[0]
             ):
                 print(
-                    f"Warning: You have two consecutive blocks without even"
+                    "Warning: You have two consecutive blocks without even"
                     " a line in between, there will remain a comment"
                     " in the result"
                 )
@@ -57,20 +57,28 @@ class IdxSelector(object):
         def is_in_slice(idx, cur_slice):
             return cur_slice is not None and cur_slice[0] <= idx <= cur_slice[1]
 
+        def is_start_slice(idx, cur_slice):
+            return cur_slice is not None and cur_slice[0] == idx
+
+        def is_end_slice(idx, cur_slice):
+            return cur_slice is not None and cur_slice[1] == idx
+
         if self.idx < self.max_lines:
             # We test if the index is in the current slice
+            is_start = is_start_slice(self.idx, self.current_slice)
+            is_end = is_end_slice(self.idx, self.current_slice)
             is_in = is_in_slice(self.idx, self.current_slice)
             if self.current_slice is not None and self.idx > self.current_slice[1]:
                 self.to_next_slice()
             self.idx += 1
-            return is_in
+            return is_start, is_in, is_end
         raise StopIteration()
 
 
 def clean_file(fh):
     """Process a single file by:
-    1- removing the lines ending by the _SOLUTION_TAG
-    2- removing any occurences of _TEMPLATE_TAG
+    1- Removing the lines ending by the _SOLUTION_TAG
+    2- Removing any occurences of _TEMPLATE_TAG
 
     Returns a cleaned string
     """
@@ -110,11 +118,13 @@ def clean_file(fh):
     line_selector = IdxSelector(
         len(output_lines), zip(start_blocks_idx, end_blocks_idx)
     )
-    output_lines = [li for li, is_in in zip(output_lines, line_selector) if not is_in]
+    output_lines = [
+        li for li, (_, is_in, _) in zip(output_lines, line_selector) if not is_in
+    ]
 
     # Process the TEMPL blocks
-    # The opening and closing should be removed
-    # The lines in between must be uncommented
+    # the opening and closing should be removed
+    # the lines in between must be uncommented
     for i, li in enumerate(output_lines):
         start_blocks_idx = [
             i
@@ -136,33 +146,19 @@ def clean_file(fh):
         len(output_lines), zip(start_blocks_idx, end_blocks_idx)
     )
     lines = []
-    prev_line = None
-    next_line = None
-    was_in = False
-    for li, is_in in zip(output_lines, line_selector):
+    for li, (is_start, is_in, is_end) in zip(output_lines, line_selector):
         next_line = li
-        if is_in:
-            # We are in a block, we remove the first comment
-            first_comment_idx = next_line.find("#")
-            next_line = (
-                next_line[:first_comment_idx] + next_line[first_comment_idx + 1 :]
-            )
-            if not was_in:
-                # If we enter the block we do not keep the line
-                next_line = None
+        if is_start or is_end:
+            # discard the line
+            continue
         else:
-            # We are not (maybe just leaving) a template block
-            if was_in:
-                # if we are just leaving the block, the last # TEMPL@
-                # must be discarded
-                prev_line = None
-        if prev_line is not None and not was_in:
-            lines.append(prev_line)
-        prev_line = next_line
-        was_in = is_in
-    if prev_line is not None:
-        lines.append(prev_line)
-
+            if is_in:
+                # If this is neither the opening or closing
+                #
+                # rm the leading '# '
+                first_comment_idx = next_line.find("# ")
+                li = li[:first_comment_idx] + li[first_comment_idx + 2 :]
+            lines.append(li)
     return "".join(lines)
 
 
@@ -171,6 +167,7 @@ def process_file(filepath: Union[Path, str], targetpath: Union[Path, str]):
     Process a single file
     """
     try:
+        print(f"Processing {filepath}")
         with open(filepath, "r") as fh:
             reslines = clean_file(fh)
         with open(targetpath, "w") as fh:
