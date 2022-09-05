@@ -103,8 +103,8 @@ def clean_file(fh):
     if len(start_blocks_idx) != len(end_blocks_idx):
         raise RuntimeError(
             "Non matching opening or ending solution blocks."
-            " Did all your #@SOL has their corresponding"
-            " #SOL@ and vice versa ?"
+            f" Did all your {_SOLUTION_BLOCK_START} has their corresponding"
+            f" {_SOLUTION_BLOCK_END} and vice versa ?"
         )
 
     line_selector = IdxSelector(
@@ -128,8 +128,8 @@ def clean_file(fh):
     if len(start_blocks_idx) != len(end_blocks_idx):
         raise RuntimeError(
             "Non matching opening or ending solution blocks."
-            " Did all your #@TEMPL has their corresponding"
-            " #SOL@ and vice versa ?"
+            f" Did all your {_TEMPLATE_BLOCK_START} has their corresponding"
+            f" {_TEMPLATE_BLOCK_END} and vice versa ?"
         )
 
     line_selector = IdxSelector(
@@ -153,7 +153,7 @@ def clean_file(fh):
         else:
             # We are not (maybe just leaving) a template block
             if was_in:
-                # if we are just leaving the block, the last #TEMPL@
+                # if we are just leaving the block, the last # TEMPL@
                 # must be discarded
                 prev_line = None
         if prev_line is not None and not was_in:
