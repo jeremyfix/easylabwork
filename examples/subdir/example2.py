@@ -6,30 +6,31 @@ import sys
 
 
 def syr(stem: int):
-    '''
+    """
     Compute the serie of Syracuse up to the limit cycle
-    '''
+    """
 
     value = stem
 
-    while(value != 1):
-        #@TEMPL
-        #if None:
+    while value != 1:
+        # @TEMPL
+        # if None:
         #    value = None
-        #else:
+        # else:
         #    value = None
-        #TEMPL@
-        #@SOL
+        # TEMPL@
+        # @SOL
         if value % 2 == 0:
             value = value // 2
         else:
             value = 3 * value + 1
-        #SOL@
+        # SOL@
         sys.stdout.write(f"{value} ")
         sys.stdout.flush()
     print()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     if len(sys.argv) != 2:
         print(f"Usage: {sys.argv[0]} value")
         sys.exit(-1)

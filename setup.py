@@ -1,14 +1,12 @@
 from setuptools import setup
 
 setup(
-    name='easylabwork',
-    version='0.2.0',
-    author='Jeremy Fix',
-    author_email='jeremy.fix@centralesupelec.fr',
-    packages=['easylabwork'],
-    license='LICENSE',
-    description='Python package from making it easy to generate lab work codes',
-    entry_points={
-        'console_scripts': ['easylabwork=easylabwork.easylabwork:main']
-    }
+    name="easylabwork",
+    version="0.3.0",
+    author="Jeremy Fix",
+    author_email="jeremy.fix@centralesupelec.fr",
+    packages=["easylabwork"],
+    license="LICENSE",
+    description="Python package from making it easy to generate lab work codes",
+    entry_points={"console_scripts": ["easylabwork=easylabwork.easylabwork:main"]},
 )
