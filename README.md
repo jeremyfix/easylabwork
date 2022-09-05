@@ -44,8 +44,8 @@ def myfunction(value: float):
     '''
 
     # Square the value
-    #@TEMPL@sq_value = None
-    sq_value = value**2  #@SOL@
+    # @TEMPL@ sq_value = None
+    sq_value = value**2  # @SOL@
 
     return sq_value
 
@@ -98,18 +98,18 @@ def syr(stem: int):
     value = stem
 
     while(value != 1):
-        #@TEMPL
-        #if None:
-        #    value = None
-        #else:
-        #    value = None
-        #TEMPL@
-        #@SOL
+        # @TEMPL
+        # if None:
+        #     value = None
+        # else:
+        #     value = None
+        # TEMPL@
+        # @SOL
         if value % 2 == 0:
             value = value // 2
         else:
             value = 3 * value + 1
-        #SOL@
+        # SOL@
         sys.stdout.write(f"{value} ")
         sys.stdout.flush()
     print()
