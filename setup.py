@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name="easylabwork",
-    version="0.3.0",
+    version="0.3.1",
     author="Jeremy Fix",
     author_email="jeremy.fix@centralesupelec.fr",
     packages=["easylabwork"],

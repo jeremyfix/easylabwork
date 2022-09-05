@@ -7,7 +7,7 @@ from typing import Union
 from pathlib import Path
 import shutil
 
-_TEMPLATE_TAG = "# @TEMPL@"
+_TEMPLATE_TAG = "# @TEMPL@ "
 _TEMPLATE_BLOCK_START = "# @TEMPL"
 _TEMPLATE_BLOCK_END = "# TEMPL@"
 _SOLUTION_TAG = "@SOL@"
