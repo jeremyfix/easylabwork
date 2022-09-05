@@ -98,15 +98,12 @@ def clean_file(fh):
     output_lines = list(map(remove_template, output_lines))
 
     # Remove the SOL blocks
-    for i, li in enumerate(output_lines):
-        start_blocks_idx = [
-            i
-            for i, li in enumerate(output_lines)
-            if li.find(_SOLUTION_BLOCK_START) != -1
-        ]
-        end_blocks_idx = [
-            i for i, li in enumerate(output_lines) if li.find(_SOLUTION_BLOCK_END) != -1
-        ]
+    start_blocks_idx = [
+        i for i, li in enumerate(output_lines) if li.find(_SOLUTION_BLOCK_START) != -1
+    ]
+    end_blocks_idx = [
+        i for i, li in enumerate(output_lines) if li.find(_SOLUTION_BLOCK_END) != -1
+    ]
 
     if len(start_blocks_idx) != len(end_blocks_idx):
         raise RuntimeError(
@@ -125,15 +122,12 @@ def clean_file(fh):
     # Process the TEMPL blocks
     # the opening and closing should be removed
     # the lines in between must be uncommented
-    for i, li in enumerate(output_lines):
-        start_blocks_idx = [
-            i
-            for i, li in enumerate(output_lines)
-            if li.find(_TEMPLATE_BLOCK_START) != -1
-        ]
-        end_blocks_idx = [
-            i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_END) != -1
-        ]
+    start_blocks_idx = [
+        i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_START) != -1
+    ]
+    end_blocks_idx = [
+        i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_END) != -1
+    ]
 
     if len(start_blocks_idx) != len(end_blocks_idx):
         raise RuntimeError(
