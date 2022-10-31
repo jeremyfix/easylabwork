@@ -131,7 +131,7 @@ def clean_file(fh):
 
     if len(start_blocks_idx) != len(end_blocks_idx):
         raise RuntimeError(
-            "Non matching opening or ending solution blocks."
+            "Non matching opening or ending template blocks."
             f" Did all your {_TEMPLATE_BLOCK_START} has their corresponding"
             f" {_TEMPLATE_BLOCK_END} and vice versa ?"
         )
