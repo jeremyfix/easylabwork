@@ -106,10 +106,18 @@ def clean_file(fh):
     ]
 
     if len(start_blocks_idx) != len(end_blocks_idx):
+        starting_lines_msg = f"Found '{_SOLUTION_BLOCK_START}' on lines {[l+1 for l in start_blocks_idx]}"
+        ending_lines_msg = (
+            f"Found '{_SOLUTION_BLOCK_END}' on lines {[l+1 for l in end_blocks_idx]}"
+        )
         raise RuntimeError(
             "Non matching opening or ending solution blocks."
             f" Did all your {_SOLUTION_BLOCK_START} has their corresponding"
             f" {_SOLUTION_BLOCK_END} and vice versa ?"
+            + "\n"
+            + starting_lines_msg
+            + "\n"
+            + ending_lines_msg
         )
 
     line_selector = IdxSelector(
@@ -129,11 +137,20 @@ def clean_file(fh):
         i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_END) != -1
     ]
 
+    print(start_blocks_idx, end_blocks_idx)
     if len(start_blocks_idx) != len(end_blocks_idx):
+        starting_lines_msg = f"Found '{_TEMPLATE_BLOCK_START}' on lines {[l+1 for l in start_blocks_idx]}"
+        ending_lines_msg = (
+            f"Found '{_TEMPLATE_BLOCK_END}' on lines {[l+1 for l in end_blocks_idx]}"
+        )
         raise RuntimeError(
             "Non matching opening or ending template blocks."
             f" Did all your {_TEMPLATE_BLOCK_START} has their corresponding"
             f" {_TEMPLATE_BLOCK_END} and vice versa ?"
+            + "\n"
+            + starting_lines_msg
+            + "\n"
+            + ending_lines_msg
         )
 
     line_selector = IdxSelector(
