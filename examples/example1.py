@@ -8,7 +8,7 @@ def myfunction(value: float):
     """
 
     # Square the value
-    # @TEMPL@ sq_value = None
+    # @TEMPL@sq_value = None
     sq_value = value**2  # @SOL@
 
     return sq_value

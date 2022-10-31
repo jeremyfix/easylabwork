@@ -7,7 +7,7 @@ from typing import Union
 from pathlib import Path
 import shutil
 
-_TEMPLATE_TAG = "# @TEMPL@ "
+_TEMPLATE_TAG = "# @TEMPL@"
 _TEMPLATE_BLOCK_START = "# @TEMPL"
 _TEMPLATE_BLOCK_END = "# TEMPL@"
 _SOLUTION_TAG = "@SOL@"
@@ -137,7 +137,6 @@ def clean_file(fh):
         i for i, li in enumerate(output_lines) if li.find(_TEMPLATE_BLOCK_END) != -1
     ]
 
-    print(start_blocks_idx, end_blocks_idx)
     if len(start_blocks_idx) != len(end_blocks_idx):
         starting_lines_msg = f"Found '{_TEMPLATE_BLOCK_START}' on lines {[l+1 for l in start_blocks_idx]}"
         ending_lines_msg = (
